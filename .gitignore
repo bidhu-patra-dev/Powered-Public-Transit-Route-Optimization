@@ -1,8 +1,11 @@
-# Python
+.DS_Store
+.env
 .venv/
 venv/
 ENV/
 env/
+frontend/node_modules/
+frontend/dist/
 __pycache__/
 *.py[cod]
 *$py.class
@@ -12,19 +15,18 @@ __pycache__/
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints*/
 
-# Data files (keep raw large files out of git)
+# Keep downloaded source data out of Git.
 data/raw/*.csv
-data/raw/gtfs/*.txt
-data/raw/gtfs/*.zip
+!data/raw/gtfs_archive_manifest.csv
+data/raw/*.zip
+data/raw/gtfs/
 data/raw/live_snapshots/*.parquet
 data/raw/live_snapshots/*.json
 data/processed/*.parquet
 data/processed/*.csv
 
-# Models and large binaries
+# Large v3 model output and artifacts
+models/cta_ridership_v3.joblib
+models/cta_route_ranker_v3_results.zip
 outputs/models/*.joblib
 outputs/models/*.bin
-
-# Environments and OS
-.DS_Store
-.env
