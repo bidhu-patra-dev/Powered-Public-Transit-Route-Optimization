@@ -128,7 +128,11 @@ class FutureHourTransitForecaster:
     def predict_future_hours(self, current_state_features: pd.DataFrame, horizons: List[int]) -> pd.DataFrame:
         """
         Generates predictions for current state across future horizons.
+        Guarded against empty inputs to prevent ValueError from sklearn.
         """
+        if current_state_features is None or len(current_state_features) == 0:
+            return pd.DataFrame(columns=["route", "horizon_hours_ahead", "forecasted_delay_min"])
+
         results = []
         routes = current_state_features["route"].tolist()
         X_curr = current_state_features[self.feature_names]

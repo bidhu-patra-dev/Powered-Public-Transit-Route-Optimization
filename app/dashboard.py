@@ -49,14 +49,21 @@ page = st.sidebar.radio(
     ]
 )
 
+ALL_ROUTES = ["22", "9", "66", "49", "79", "3", "4", "8", "60", "126"]
+
 selected_routes = st.sidebar.multiselect(
     "Filter Corridors:",
-    options=["22", "9", "66", "49", "79", "3", "4", "8", "60", "126"],
+    options=ALL_ROUTES,
     default=["22", "9", "66", "49", "79"]
 )
 
+# Robust fallback: if user clears the filter, default gracefully to all corridors
+active_corridors = selected_routes if (selected_routes and len(selected_routes) > 0) else ALL_ROUTES
+if not selected_routes:
+    st.sidebar.caption("ℹ️ Showing all corridors by default.")
+
 # Shared data caches
-@st.cache_data(ttl=15)
+@st.cache_data(ttl=10)
 def get_live_data(routes):
     tracker = CTALiveTracker()
     return tracker.get_live_vehicles(routes=routes)
@@ -84,7 +91,7 @@ if page == "🔴 Live Transit Tracking":
     if col_refresh.button("🔄 Refresh Live Feed"):
         st.cache_data.clear()
 
-    df_live = get_live_data(selected_routes)
+    df_live = get_live_data(active_corridors)
     
     # Summary KPIs
     kpi1, kpi2, kpi3, kpi4 = st.columns(4)
@@ -176,7 +183,7 @@ elif page == "⏱️ Hourly Bottleneck Analysis":
     st.markdown("Combines GTFS scheduled capacity and Chicago Traffic Tracker speed sensors.")
 
     df_hist = get_historical_hourly_data()
-    df_filtered = df_hist[df_hist["route"].isin(selected_routes)]
+    df_filtered = df_hist[df_hist["route"].isin(active_corridors)]
 
     # Hourly aggregations
     hourly_agg = df_filtered.groupby("hour").agg({
@@ -211,6 +218,7 @@ elif page == "⏱️ Hourly Bottleneck Analysis":
             yaxis=dict(title="Speed (mph)", side="left"),
             yaxis2=dict(title="Delay (minutes)", overlaying="y", side="right"),
             legend=dict(x=0.05, y=0.95),
+            template="plotly_white",
             height=420
         )
         st.plotly_chart(fig_speed, use_container_width=True)
@@ -222,9 +230,10 @@ elif page == "⏱️ Hourly Bottleneck Analysis":
             y="delay_min",
             color="route",
             title="Hourly Delay Breakdown Across Corridors",
-            labels={"hour": "Hour of Day", "delay_min": "Average Delay (mins)"}
+            labels={"hour": "Hour of Day", "delay_min": "Average Delay (mins)"},
+            template="plotly_white"
         )
-        fig_demand.update_layout(height=420)
+        fig_demand.update_layout(height=420, template="plotly_white")
         st.plotly_chart(fig_demand, use_container_width=True)
 
     st.markdown("### Peak vs Off-Peak Headway Regularity")
@@ -267,24 +276,27 @@ elif page == "🔮 Future-Hour Forecasting":
     st.markdown(f"### Predicted Route Delays for +{horizon_slider} Hour(s) Ahead")
     # Take latest state of each route
     latest_state = feats.sort_values("timestamp").groupby("route").last().reset_index()
-    latest_state = latest_state[latest_state["route"].isin(selected_routes)]
+    latest_state = latest_state[latest_state["route"].isin(active_corridors)]
 
     # Generate predictions
-    # Available trained direct horizons: [1, 2, 3, 6, 12, 24]
     closest_h = min([1, 2, 3, 6, 12, 24], key=lambda x: abs(x - horizon_slider))
     pred_df = forecaster.predict_future_hours(latest_state, horizons=[closest_h])
 
-    fig_pred = px.bar(
-        pred_df,
-        x="route",
-        y="forecasted_delay_min",
-        color="forecasted_delay_min",
-        color_continuous_scale="Reds",
-        title=f"Forecasted Delay (mins) for Horizon +{closest_h}h",
-        labels={"forecasted_delay_min": "Forecasted Delay (mins)", "route": "CTA Route"}
-    )
-    fig_pred.update_layout(height=400)
-    st.plotly_chart(fig_pred, use_container_width=True)
+    if not pred_df.empty:
+        fig_pred = px.bar(
+            pred_df,
+            x="route",
+            y="forecasted_delay_min",
+            color="forecasted_delay_min",
+            color_continuous_scale="Reds",
+            title=f"Forecasted Delay (mins) for Horizon +{closest_h}h",
+            labels={"forecasted_delay_min": "Forecasted Delay (mins)", "route": "CTA Route"},
+            template="plotly_white"
+        )
+        fig_pred.update_layout(height=400, template="plotly_white")
+        st.plotly_chart(fig_pred, use_container_width=True)
+    else:
+        st.info("No route predictions available for the selected corridor filter.")
 
 # -------------------------------------------------------------------------------------------------
 # PAGE 4: DYNAMIC HEADWAY OPTIMIZATION
@@ -298,7 +310,7 @@ elif page == "⚡ Dynamic Headway Optimization":
 
     forecaster, feats = get_trained_forecaster()
     latest_state = feats.sort_values("timestamp").groupby("route").last().reset_index()
-    latest_state = latest_state[latest_state["route"].isin(selected_routes)]
+    latest_state = latest_state[latest_state["route"].isin(active_corridors)]
 
     # Get predictions for next hour (t+1)
     preds = forecaster.predict_future_hours(latest_state, horizons=[1])
@@ -349,6 +361,7 @@ elif page == "⚡ Dynamic Headway Optimization":
         title="Passenger Wait Time Comparison: Baseline Timetable vs Proactive Dynamic Headways",
         yaxis_title="Average Wait Time (mins)",
         xaxis_title="CTA Route",
+        template="plotly_white",
         height=420
     )
     st.plotly_chart(fig_comp, use_container_width=True)
