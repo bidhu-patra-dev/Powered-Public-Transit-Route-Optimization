@@ -17,6 +17,7 @@ data/raw/*.csv
 data/raw/gtfs/*.txt
 data/raw/gtfs/*.zip
 data/raw/live_snapshots/*.parquet
+data/raw/live_snapshots/*.json
 data/processed/*.parquet
 data/processed/*.csv
 
