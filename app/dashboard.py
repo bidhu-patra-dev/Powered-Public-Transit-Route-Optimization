@@ -37,7 +37,7 @@ st.markdown(
 )
 
 # Sidebar controls
-st.sidebar.image("https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/CTA_logo.svg/300px-CTA_logo.svg.png", width=120)
+st.sidebar.markdown("## 🚌 **CTA Transit AI**")
 st.sidebar.header("Navigation & Settings")
 page = st.sidebar.radio(
     "Go to Module:",
@@ -106,27 +106,51 @@ if page == "🔴 Live Transit Tracking":
             "MINOR_DELAY": "#f39c12", # orange
             "MAJOR_DELAY": "#e74c3c"  # red
         }
-        fig_map = px.scatter_mapbox(
-            df_live,
-            lat="lat",
-            lon="lon",
-            color="delay_status",
-            color_discrete_map=color_map,
-            size=[12]*len(df_live),
-            hover_name="vid",
-            hover_data={
-                "rt": True,
-                "spd": ":.1f mph",
-                "delay_min": ":.1f min",
-                "delay_status": True,
-                "lat": False,
-                "lon": False
-            },
-            zoom=10.5,
-            center={"lat": 41.8781, "lon": -87.66},
-            mapbox_style="carto-positron",
-            title="Real-Time Bus GPS Locations & Delay Status"
-        )
+        # Use px.scatter_map (Plotly v6+) or fallback to px.scatter_mapbox
+        if hasattr(px, "scatter_map"):
+            fig_map = px.scatter_map(
+                df_live,
+                lat="lat",
+                lon="lon",
+                color="delay_status",
+                color_discrete_map=color_map,
+                size=[12]*len(df_live),
+                hover_name="vid",
+                hover_data={
+                    "rt": True,
+                    "spd": ":.1f mph",
+                    "delay_min": ":.1f min",
+                    "delay_status": True,
+                    "lat": False,
+                    "lon": False
+                },
+                zoom=10.5,
+                center={"lat": 41.8781, "lon": -87.66},
+                map_style="carto-positron",
+                title="Real-Time Bus GPS Locations & Delay Status"
+            )
+        else:
+            fig_map = px.scatter_mapbox(
+                df_live,
+                lat="lat",
+                lon="lon",
+                color="delay_status",
+                color_discrete_map=color_map,
+                size=[12]*len(df_live),
+                hover_name="vid",
+                hover_data={
+                    "rt": True,
+                    "spd": ":.1f mph",
+                    "delay_min": ":.1f min",
+                    "delay_status": True,
+                    "lat": False,
+                    "lon": False
+                },
+                zoom=10.5,
+                center={"lat": 41.8781, "lon": -87.66},
+                mapbox_style="carto-positron",
+                title="Real-Time Bus GPS Locations & Delay Status"
+            )
         fig_map.update_layout(margin={"r":0,"t":40,"l":0,"b":0}, height=550)
         st.plotly_chart(fig_map, use_container_width=True)
 
