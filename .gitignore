@@ -1,0 +1,29 @@
+# Python
+.venv/
+venv/
+ENV/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints*/
+
+# Data files (keep raw large files out of git)
+data/raw/*.csv
+data/raw/gtfs/*.txt
+data/raw/gtfs/*.zip
+data/raw/live_snapshots/*.parquet
+data/processed/*.parquet
+data/processed/*.csv
+
+# Models and large binaries
+outputs/models/*.joblib
+outputs/models/*.bin
+
+# Environments and OS
+.DS_Store
+.env
