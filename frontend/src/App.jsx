@@ -102,98 +102,128 @@ export default function App() {
 
   return (
     <div>
-      {/* Enterprise Header */}
-      <header className="app-header">
-        <div className="brand-wrapper">
-          <div className="brand-icon">🚌</div>
-          <div>
-            <h1 className="brand-title">CTA Transit AI · Route Intelligence Platform</h1>
-            <p className="brand-subtitle">
-              Real-Time Vehicle Telemetry • Hourly Traffic Analysis • LightGBM Forecaster • Dynamic Headway Optimization
-            </p>
-          </div>
-        </div>
-
-        <div className="header-meta">
-          <div className="api-badge">
-            <span className="dot"></span>
-            CTA DEVELOPER API ACTIVE
-          </div>
-          <span style={{ fontSize: "0.82rem", color: "#64748B", borderLeft: "1px solid #CBD5E1", paddingLeft: "12px" }}>
-            {lastUpdated} CST
-          </span>
-        </div>
-      </header>
-
-      {/* Modern Tabbed Navigation */}
-      <nav className="tabs-nav">
-        <button
-          className={`tab-btn ${activeTab === "live" ? "active" : ""}`}
-          onClick={() => setActiveTab("live")}
-        >
-          🗺️ Live Network Operations
-        </button>
-        <button
-          className={`tab-btn ${activeTab === "hourly" ? "active" : ""}`}
-          onClick={() => setActiveTab("hourly")}
-        >
-          ⏱️ Hourly Bottlenecks & Speed
-        </button>
-        <button
-          className={`tab-btn ${activeTab === "forecaster" ? "active" : ""}`}
-          onClick={() => setActiveTab("forecaster")}
-        >
-          🔮 24-Hour Predictive Forecaster
-        </button>
-        <button
-          className={`tab-btn ${activeTab === "optimization" ? "active" : ""}`}
-          onClick={() => setActiveTab("optimization")}
-        >
-          ⚡ Dynamic Dispatch & Optimization
-        </button>
-      </nav>
-
-      {/* Main Content Area */}
-      <main className="main-content">
-        {/* Global Route Selection Bar */}
-        <div className="route-filter-bar">
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
-            <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "#475569" }}>
-              Filter by CTA Route:
-            </span>
-            <div className="filter-pills">
-              <button
-                className={`route-pill ${selectedRoute === null ? "active" : ""}`}
-                onClick={() => setSelectedRoute(null)}
-              >
-                🌐 All Routes (10)
-              </button>
-              {routesList.map((rt) => (
-                <button
-                  key={rt.route}
-                  className={`route-pill ${selectedRoute === rt.route ? "active" : ""}`}
-                  style={
-                    selectedRoute === rt.route
-                      ? { background: rt.color || "#0072CE", borderColor: rt.color || "#0072CE" }
-                      : {}
-                  }
-                  onClick={() => setSelectedRoute(rt.route)}
-                >
-                  {rt.display_name}
-                </button>
-              ))}
+      {/* Unified Sticky Header with Navigation Tabs */}
+      <header className="top-nav-wrapper">
+        <div className="top-nav-bar">
+          <div className="brand-section">
+            <div className="brand-badge-icon">🚌</div>
+            <div>
+              <h1 className="brand-headline">Chicago Transit AI · Route Intelligence Platform</h1>
+              <p className="brand-tagline">
+                Real-Time Vehicle Telemetry • Hourly Traffic Tracker • Multi-Horizon LightGBM Forecaster • Headway Optimization
+              </p>
             </div>
           </div>
 
-          {selectedRoute && (
+          <div className="top-nav-meta">
+            <div className="developer-api-badge">
+              <span className="pulsing-green-dot"></span>
+              CTA DEVELOPER API ACTIVE
+            </div>
+            <div className="clock-timestamp">{lastUpdated} CST</div>
+          </div>
+        </div>
+
+        {/* Top Navigation Tabs (Permanently Sticky) */}
+        <nav className="sub-nav-tabs">
+          <button
+            className={`nav-tab-button ${activeTab === "live" ? "active" : ""}`}
+            onClick={() => setActiveTab("live")}
+          >
+            🗺️ Live Network Operations
+          </button>
+          <button
+            className={`nav-tab-button ${activeTab === "hourly" ? "active" : ""}`}
+            onClick={() => setActiveTab("hourly")}
+          >
+            ⏱️ Hourly Bottlenecks & Speed
+          </button>
+          <button
+            className={`nav-tab-button ${activeTab === "forecaster" ? "active" : ""}`}
+            onClick={() => setActiveTab("forecaster")}
+          >
+            🔮 24-Hour Predictive Forecaster
+          </button>
+          <button
+            className={`nav-tab-button ${activeTab === "optimization" ? "active" : ""}`}
+            onClick={() => setActiveTab("optimization")}
+          >
+            ⚡ Dynamic Dispatch & Optimization
+          </button>
+        </nav>
+      </header>
+
+      {/* Main Page Container */}
+      <main className="app-container">
+        {/* Prominent Route Selection Toolbar */}
+        <div className="route-control-card">
+          <div className="route-control-header">
+            <div className="route-control-label">
+              <span>📍 Select CTA Bus Route:</span>
+              {selectedRoute && (
+                <span style={{ fontSize: "0.82rem", color: "#64748B", fontWeight: 500 }}>
+                  (Filtering to Route {selectedRoute})
+                </span>
+              )}
+            </div>
+
+            <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+              {selectedRoute && (
+                <button
+                  className="btn-action-outline"
+                  style={{ height: "38px", fontSize: "0.84rem", padding: "0 14px" }}
+                  onClick={() => setSelectedRoute(null)}
+                >
+                  ✕ Show All Routes
+                </button>
+              )}
+              <button
+                className="btn-action-primary"
+                style={{ height: "38px", fontSize: "0.84rem", padding: "0 16px" }}
+                onClick={fetchLiveTelemetry}
+                disabled={loading}
+              >
+                {loading ? "Syncing..." : "🔄 Sync Live Telemetry"}
+              </button>
+            </div>
+          </div>
+
+          <div className="route-chips-grid">
             <button
-              className="btn-outline"
-              style={{ fontSize: "0.78rem", padding: "4px 8px" }}
+              className={`route-chip ${selectedRoute === null ? "active" : ""}`}
               onClick={() => setSelectedRoute(null)}
             >
-              Clear Route Filter
+              🌐 All Core Routes ({routesList.length || 10})
             </button>
-          )}
+
+            {routesList.map((rt) => {
+              const isSelected = selectedRoute === rt.route;
+              return (
+                <button
+                  key={rt.route}
+                  className={`route-chip ${isSelected ? "active" : ""}`}
+                  style={
+                    isSelected
+                      ? { background: rt.color || "#0072CE", borderColor: rt.color || "#0072CE" }
+                      : {}
+                  }
+                  onClick={() => setSelectedRoute(isSelected ? null : rt.route)}
+                >
+                  <span
+                    className="route-chip-num"
+                    style={
+                      !isSelected
+                        ? { border: `1.5px solid ${rt.color || "#0072CE"}`, color: rt.color || "#0072CE" }
+                        : {}
+                    }
+                  >
+                    {rt.route}
+                  </span>
+                  <span>{rt.name}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Tab 1: Live Network Operations */}
