@@ -30,3 +30,8 @@ models/cta_ridership_v3.joblib
 models/cta_route_ranker_v3_results.zip
 outputs/models/*.joblib
 outputs/models/*.bin
+
+# Local presentation & rehearsal notes
+docs/PRESENTATION_GUIDE.md
+*PRESENTATION_GUIDE*
+
