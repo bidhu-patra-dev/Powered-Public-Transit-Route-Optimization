@@ -41,7 +41,12 @@ class CTALiveTracker:
     Maintains continuous stateful fleet physics across UI refreshes.
     """
     def __init__(self, api_key: Optional[str] = None):
-        self.api_key = api_key or os.environ.get("CTA_BUS_TRACKER_KEY", "")
+        self.api_key = (
+            api_key
+            or os.environ.get("CTA_BUS_TRACKER_KEY", "").strip()
+            or os.environ.get("CTA_BUS_TRACKER_API_KEY", "").strip()
+            or ""
+        )
         self.base_url = "http://www.ctabustracker.com/bustime/api/v2"
 
     def get_live_vehicles(self, routes: Optional[List[str]] = None) -> pd.DataFrame:

@@ -231,7 +231,11 @@ def health() -> dict:
 
 
 def _read_bus_tracker_key() -> str | None:
-    return os.environ.get("CTA_BUS_TRACKER_API_KEY", "").strip() or None
+    return (
+        os.environ.get("CTA_BUS_TRACKER_API_KEY", "").strip()
+        or os.environ.get("CTA_BUS_TRACKER_KEY", "").strip()
+        or None
+    )
 
 
 @app.get("/api/v1/map/geometry", tags=["map"])
