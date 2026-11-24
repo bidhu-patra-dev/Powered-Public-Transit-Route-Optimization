@@ -12,6 +12,7 @@ from typing import Literal
 import pandas as pd
 import requests
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, StrictInt
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -19,6 +20,7 @@ from fastapi.staticfiles import StaticFiles
 from .data_loader import load_bus_ridership
 from .predict_v3 import load_v3_bundle, predict_daily_routes_from_bundle
 from .scenarios import optimize_trip_allocation
+from .api_v2 import router as v2_router
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 WEB_ROOT = PROJECT_ROOT / "frontend" / "dist"
@@ -57,13 +59,27 @@ app = FastAPI(
     ),
     version="2.0.0",
 )
-app.mount("/assets", StaticFiles(directory=WEB_ROOT / "assets"), name="assets")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(v2_router, prefix="/api/v2")
+if (WEB_ROOT / "assets").is_dir():
+    app.mount("/assets", StaticFiles(directory=WEB_ROOT / "assets"), name="assets")
 
 
 @app.get("/", include_in_schema=False)
-def home() -> FileResponse:
+@app.head("/", include_in_schema=False)
+def home():
     """Serve the browser dashboard; all data operations use this API."""
-    return FileResponse(WEB_ROOT / "index.html")
+    if (WEB_ROOT / "index.html").is_file():
+        return FileResponse(WEB_ROOT / "index.html")
+    return {"message": "CTA Transit Intelligence API Active. V2 Endpoints available at /api/v2/ and docs at /docs"}
 
 
 class ScenarioRoute(BaseModel):
