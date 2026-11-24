@@ -1,5 +1,6 @@
 # 🚌 Chicago Transit AI: Enterprise Route Intelligence & Headway Optimization Platform
 
+[![Live App](https://img.shields.io/badge/Live_Demo-Railway_Online-10B981?style=for-the-badge&logo=railway&logoColor=white)](https://cta-route-optimizer-ai.up.railway.app)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![React](https://img.shields.io/badge/React-18.3-61DAFB?style=flat&logo=react&logoColor=black)](https://react.dev/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111%2B-009688?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
@@ -8,9 +9,12 @@
 [![CTA API](https://img.shields.io/badge/CTA_Bus_Tracker-Developer_API_Active-0072CE?style=flat)](https://www.transitchicago.com/developers/bustracker/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-An enterprise-grade, end-to-end Chicago Transit Authority (CTA) bus route intelligence, real-time fleet operations, and autonomous dispatch platform. 
+> 🌐 **Live Production Deployment:** **[https://cta-route-optimizer-ai.up.railway.app](https://cta-route-optimizer-ai.up.railway.app)**  
+> Unified React 18 SPA + FastAPI ML Backend hosted in a single Docker container on Railway (`Port 8080`, dual-stack IPv4+IPv6).
 
-Engineered with a modern **React 18 + Vite** single-page application (SPA), an interactive **Leaflet GeoJSON route network map**, and a high-throughput **FastAPI** Python backend powering machine learning models and dynamic headway optimization engines.
+An enterprise-grade, end-to-end Chicago Transit Authority (CTA) bus route intelligence, real-time fleet operations, and autonomous dispatch platform.
+
+Engineered with a responsive **React 18 + Vite** single-page application (SPA) across desktop, tablet, and mobile viewports, an interactive **Leaflet GeoJSON route network map**, and a high-throughput **FastAPI** Python backend powering machine learning models and dynamic headway optimization engines.
 
 ---
 
@@ -34,12 +38,12 @@ flowchart TD
         D1 --> D2["Constrained Linear Headway Optimizer"]
     end
 
-    subgraph Enterprise React Interface
+    subgraph Responsive Enterprise React Interface
         C1 --> E1
         C2 --> E1
         D1 --> E1
         D2 --> E1
-        E1 --> F1["React 18 + Vite Single Page Application"]
+        E1 --> F1["React 18 + Vite SPA (Desktop, Tablet & Mobile)"]
         F1 --> G1["🗺️ Tab 1: Live Network Operations (Route Polylines & Fleet GPS)"]
         F1 --> G2["⏱️ Tab 2: Hourly Bottlenecks & Clustering Studio"]
         F1 --> G3["🔮 Tab 3: 24-Hour Predictive Forecaster"]
@@ -52,11 +56,10 @@ flowchart TD
 ## 🌟 Core Pillars & Technical Capabilities
 
 ### 1. 🗺️ Live Network Operations & Route Map
-- **Official Developer API Attribution:** Powered directly by the author's registered **CTA Bus Tracker Developer API Key** and GTFS-Realtime streams for instantaneous vehicle locations, speeds, headings, and schedule adherence.
+- **Official Developer API Integration:** Powered by a registered **CTA Bus Tracker Developer API Key** (`CTA_BUS_TRACKER_KEY` / `CTA_BUS_TRACKER_API_KEY`) querying live CTA BusTime `/getvehicles` AVL transponders across all 10 routes, with seamless fallback to the stateful fleet physics simulator when offline.
 - **Route Line Polylines (GeoJSON Connections):** Rather than isolated point markers, the interactive Leaflet map renders the **actual street line geometries** for each CTA bus route (e.g. Route 9 Ashland, Route 22 Clark, Route 66 Chicago, Route 49 Western, Route 79 79th, Route 8 Halsted, Route 126 Jackson, Route 3 King Drive, Route 4 Cottage Grove, Route 60 Blue Island) with custom transit colors.
-- **Stateful Fleet Physics:** Live vehicles advance continuously along street coordinates based on elapsed time and real-time speeds, preventing erratic teleportation on refreshes.
+- **Stateful Fleet Physics & Dual-Stack Serving:** Uses `ResizeObserver`-aware Leaflet sizing (`invalidateSize()`) for seamless rotation/resize behavior, paired with watermark-free **OpenStreetMap** tiles (zero third-party map API keys required).
 - **Real-Time KPI Scorecard:** Instant visibility into active buses in service, mean arterial fleet speed (mph), on-time performance (OTP %), and severe delay counts (>6m).
-- **Watermark-Free Basemap:** Powered by high-contrast OpenStreetMap tiles for clean, crisp, watermark-free arterial navigation.
 
 ### 2. ⏱️ Hourly Bottlenecks & Unsupervised K-Means Route Clustering
 - **Cross-Source Data Synthesis:** Merges scheduled GTFS timetables with the **Chicago Traffic Tracker** speed sensor dataset across 1,250 arterial street segments.
@@ -86,6 +89,10 @@ flowchart TD
   - ✅ **MAINTAIN TIMETABLE:** Confirms routes within optimal threshold tolerance.
 - **1-Click CSV Export:** Generates downloadable dispatch schedules for direct ingestion into transit CAD/AVL systems.
 
+### 5. 📱 Mobile, Tablet & Desktop Responsive UX
+- **Adaptive Breakpoints (`<=480px`, `<=768px`, `<=1024px`, `<=1280px`):** Fluid KPI grid (`4 -> 2 -> 1` columns), responsive stacked two-column panels, horizontally scrollable tab bar, and overflow-safe tables/charts.
+- **Squash & Expand Controls:** Compact swipeable route chip carousel on mobile with a **`▼ All 10 Routes` / `▲ Squash Routes`** drawer toggle, plus **`Collapse ▲` / `Expand ▼`** toggles across the Live Route Stream, Congestion Leaderboard, K-Means Studio, Wait Time Comparison, and Dispatch Directives cards.
+
 ---
 
 ## 🚍 Monitored Core CTA Routes
@@ -110,22 +117,22 @@ flowchart TD
 The platform features a sticky top navigation header providing continuous access across 4 specialized views:
 
 1. **🗺️ Live Network Operations (Tab 1):**
-   - **Route Filter Toolbar:** Quick-select individual CTA bus routes or view all 10 core routes simultaneously.
+   - **Route Filter Toolbar:** Quick-select individual CTA bus routes, view all 10 core routes simultaneously, or swipe/expand on mobile.
    - **CTA Developer API Badge:** Verified status badge confirming active live feed ingestion.
    - **Unified Sync Action:** Single, high-visibility `Sync Live Telemetry` button updating vehicle positions and physics in real time.
    - **Executive KPI Cards:** Active fleet count, mean arterial speed, on-time performance (OTP), and severe delay tallies.
-   - **Split-View Map & Telemetry Stream:** Interactive Leaflet map displaying exact route line geometry and color-coded bus pins alongside a live per-route operational stream.
+   - **Split-View Map & Telemetry Stream:** Interactive Leaflet map displaying exact route line geometry and color-coded bus pins alongside a collapsible live per-route operational stream.
 
 2. **⏱️ Hourly Bottlenecks & Speed (Tab 2):**
-   - **Diurnal Congestion Curve:** 24-hour hourly trend line visualizing arterial speed degradation against schedule delay spikes.
-   - **Route Congestion Leaderboard:** Ranked bar chart identifying top bottleneck corridors.
+   - **Diurnal Congestion Curve:** 24-hour hourly trend line visualizing arterial speed degradation against schedule delay spikes (touch-scrollable on mobile).
+   - **Route Congestion Leaderboard:** Ranked bottleneck table with expandable/collapsible toggle.
    - **K-Means Cluster Visualizer:** 2D feature space scatter plot highlighting the 3 operational route archetypes and their tailored transit intervention policies.
 
 3. **🔮 24-Hour Predictive Forecaster (Tab 3):**
    - **Interactive Horizon Slider:** Predict delay conditions from $t+1$ to $t+24$ hours ahead.
    - **Target Time Clock:** Digital display badge rendering the exact target clock time.
    - **Forecast Confidence Bounds:** Predicted mean delay with $\pm 1.1\text{m}$ confidence intervals.
-   - **Horizon Degradation Table:** Validated error statistics ($R^2$, MAE, RMSE) across 1h, 3h, 6h, 12h, and 24h horizons.
+   - **Horizon Degradation Table:** Validated error statistics ($R^2$, MAE, RMSE) across 1h, 2h, 3h, 6h, 12h, and 24h horizons.
 
 4. **⚡ Dynamic Dispatch & Optimization (Tab 4):**
    - **Executive Impact Scorecard:** Quantified wait time reduction percentage, total passenger hours saved, and optimal headway metrics.
@@ -135,7 +142,23 @@ The platform features a sticky top navigation header providing continuous access
 
 ---
 
-## 🚀 Quickstart: Running the Application
+## ☁️ Cloud Deployment (Railway Unified Container)
+
+The live platform at **[https://cta-route-optimizer-ai.up.railway.app](https://cta-route-optimizer-ai.up.railway.app)** runs both the React 18 SPA and the FastAPI backend inside a single unified container using [`Dockerfile`](Dockerfile) and [`railway.json`](railway.json).
+
+- **Dual-Stack Server (`src/server.py`):** Automatically binds a dual-stack IPv4+IPv6 socket (`[::] + 0.0.0.0`, `IPV6_V6ONLY=0`) for compatibility with Railway's edge proxy (`railway-hikari`).
+- **Port Configuration:** Reads Railway's injected `PORT` environment variable (`8080` on Railway Public Networking Target Port, falling back to `8000` for local execution).
+- **Health Check:** `/health` verifies service availability for zero-downtime Railway deployments.
+- **Environment Variables:**
+
+| Variable | Required | Default | Description |
+| :--- | :---: | :---: | :--- |
+| `CTA_BUS_TRACKER_KEY` | Optional | `""` | Registered CTA Bus Tracker API key (`CTA_BUS_TRACKER_API_KEY` is also accepted). Falls back to smooth stateful physics when unset. |
+| `PORT` | Optional | `8000` *(Local)* / `8080` *(Railway)* | HTTP server bind port. Must match Railway's Public Networking Target Port (`8080`). |
+
+---
+
+## 🚀 Quickstart: Running Locally
 
 ### Prerequisites
 - Python 3.10+
@@ -145,19 +168,26 @@ The platform features a sticky top navigation header providing continuous access
 
 ```bash
 # Clone repository and enter directory
-git clone https://github.com/springboardmentor441p-coderr/Powered-Public-Transit-Route-Optimization.git
+git clone https://github.com/bidhu-patra-dev/Powered-Public-Transit-Route-Optimization.git
 cd Powered-Public-Transit-Route-Optimization
 
 # Create and activate Python virtual environment
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+
+# (Optional) Configure live CTA developer key in .env
+echo "CTA_BUS_TRACKER_KEY=your_cta_api_key_here" > .env
 ```
 
 ### 2. Launching the Platform
 
 #### Mode A: Production Mode (Instant Zero-Build Launch)
-The compiled, production-ready React 18 SPA is included in `frontend/dist/`. Simply launch FastAPI:
+The compiled, production-ready React 18 SPA is included in `frontend/dist/`. Launch the dual-stack FastAPI server (defaults to port `8000`, override with `PORT=8080`):
+```bash
+python -m src.server
+```
+Or directly with Uvicorn:
 ```bash
 uvicorn src.api:app --host 0.0.0.0 --port 8000
 ```
@@ -166,7 +196,7 @@ Open **`http://localhost:8000`** in any web browser.
 #### Mode B: Frontend Development Mode (Hot Module Replacement)
 To modify React components with live reload:
 ```bash
-# Terminal 1: Launch FastAPI Backend
+# Terminal 1: Launch FastAPI Backend on port 8000 (matching frontend/vite.config.js proxy)
 uvicorn src.api:app --reload --port 8000
 
 # Terminal 2: Launch Vite Dev Server
@@ -185,17 +215,18 @@ streamlit run app/dashboard.py --server.port 8501
 
 ## 📡 REST API Reference
 
-The backend exposes an enterprise REST API under `/api/v2/`:
+The backend exposes health diagnostics and the V2 REST API under `/api/v2/`:
 
 | Method | Endpoint | Query Parameters | Description |
 | :---: | :--- | :--- | :--- |
+| `GET` | `/health` | — | Service and evaluation report readiness check used by Railway. |
 | `GET` | `/api/v2/routes` | — | Returns catalog of monitored CTA routes, terminal names, and route colors. |
-| `GET` | `/api/v2/routes/geojson` | `route_id` *(optional)* | Returns official GeoJSON `MultiLineString` route line connections. |
-| `GET` | `/api/v2/live` | `route_id` *(optional)* | Live bus telemetry stream (GPS coordinates, speeds, delays, bearings, KPIs). |
-| `GET` | `/api/v2/hourly-bottlenecks` | `route_id` *(optional)* | 24-hour diurnal speed/delay curves, congestion rankings, and K-Means clusters. |
-| `GET` | `/api/v2/forecast` | `horizon_hours` *(1–24)*, `route_id` | Direct multi-horizon LightGBM delay predictions and validation metrics. |
-| `GET` | `/api/v2/optimize` | `route_id` *(optional)* | Dynamic headway compression, wait time reductions, and dispatch directives. |
-| `GET` | `/api/v2/export-dispatch-csv` | `route_id` *(optional)* | Downloadable CSV dispatch schedule for transit CAD/AVL systems. |
+| `GET` | `/api/v2/routes/geojson` | `routes` *(optional, CSV)* | Returns official GeoJSON `MultiLineString` route line connections. |
+| `GET` | `/api/v2/live` | `routes` *(optional, CSV)* | Live bus telemetry stream (GPS coordinates, speeds, delays, bearings, KPIs). |
+| `GET` | `/api/v2/hourly-bottlenecks` | `routes` *(optional, CSV)* | 24-hour diurnal speed/delay curves, congestion rankings, and K-Means clusters. |
+| `GET` | `/api/v2/forecast` | `horizon` *(1–24)*, `routes` *(optional)* | Direct multi-horizon LightGBM delay predictions and validation metrics. |
+| `GET` | `/api/v2/optimize` | `horizon` *(1–24)*, `routes` *(optional)* | Dynamic headway compression, wait time reductions, and dispatch directives. |
+| `GET` | `/api/v2/export-dispatch-csv` | `horizon` *(1–24)*, `routes` *(optional)* | Downloadable CSV dispatch schedule for transit CAD/AVL systems. |
 
 ---
 
@@ -212,28 +243,30 @@ The backend exposes an enterprise REST API under `/api/v2/`:
 │   ├── dist/                      # Pre-compiled production React SPA (ready to serve)
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── RouteMap.jsx       # Leaflet map with GeoJSON route lines & bus markers
+│   │   │   ├── RouteMap.jsx       # Leaflet map with GeoJSON lines, ResizeObserver & bus markers
 │   │   │   ├── LiveOperationsTab.jsx
 │   │   │   ├── HourlyBottlenecksTab.jsx
 │   │   │   ├── ForecasterTab.jsx
 │   │   │   └── OptimizationTab.jsx
 │   │   ├── styles/
-│   │   │   └── enterprise.css     # Enterprise light-theme design system
-│   │   ├── App.jsx                # Main React app container with sticky header
+│   │   │   └── enterprise.css     # Responsive desktop/tablet/mobile light-theme design system
+│   │   ├── App.jsx                # Main React app container with sticky header & route controls
 │   │   └── main.jsx               # React DOM entry point
 │   ├── package.json
 │   └── vite.config.js             # Vite configuration with /api proxy
 ├── notebooks/                     # Guided exploration notebooks (01 to 05)
 ├── src/
-│   ├── api.py                     # Main FastAPI application & static mount
+│   ├── api.py                     # Main FastAPI application & static SPA mount
 │   ├── api_v2.py                  # V2 REST router powering the React platform
+│   ├── server.py                  # Dual-stack (IPv4+IPv6) dynamic PORT Uvicorn launcher
 │   ├── live_feed.py               # CTA GTFS-RT & Bus Tracker stateful physics client
 │   ├── features.py                # Cyclic temporal encodings and lag pipelines
 │   ├── optimizer.py               # Dynamic headway optimization engine
 │   └── models/
 │       └── forecaster.py          # Multi-horizon direct LightGBM models
 ├── Dockerfile                     # Multi-stage Docker build (Node web build + Python)
-├── render.yaml                    # Cloud deployment specification
+├── railway.json                   # Railway Docker deployment & /health check config
+├── render.yaml                    # Render cloud deployment specification
 └── requirements.txt               # Python package dependencies
 ```
 
@@ -241,6 +274,5 @@ The backend exposes an enterprise REST API under `/api/v2/`:
 
 ## 👥 Branch Workflow & Contributing Guidelines
 
-- ❌ Do **not** commit or push directly to `main`.
-- ✅ All active development and commits must remain strictly on your personal branch (`users/bidhubhusan`).
-- ✅ Keep pushing your branch regularly to reflect the latest deliverable.
+- ❌ Do **not** commit or push directly to `main` on the Springboard organization repository (`origin`).
+- ✅ Keep active development on `users/bidhubhusan` on `origin`, and mirror releases cleanly to your personal deployment repo (`personal/main`).
