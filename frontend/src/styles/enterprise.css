@@ -45,7 +45,7 @@
   box-sizing: border-box;
 }
 
-body {
+html, body {
   margin: 0;
   padding: 0;
   font-family: var(--font-main);
@@ -54,6 +54,8 @@ body {
   font-size: 15px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+  max-width: 100%;
 }
 
 /* ==========================================================================
@@ -75,17 +77,20 @@ body {
   padding: 12px 32px;
   max-width: 1720px;
   margin: 0 auto;
+  gap: 16px;
 }
 
 .brand-section {
   display: flex;
   align-items: center;
   gap: 14px;
+  min-width: 0;
 }
 
 .brand-badge-icon {
   width: 44px;
   height: 44px;
+  flex-shrink: 0;
   background: var(--cta-blue);
   color: #FFFFFF;
   border-radius: 12px;
@@ -97,11 +102,12 @@ body {
 }
 
 .brand-headline {
-  font-size: 1.25rem;
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
   font-weight: 800;
   color: var(--text-dark);
   letter-spacing: -0.02em;
   margin: 0;
+  line-height: 1.25;
 }
 
 .brand-tagline {
@@ -114,7 +120,8 @@ body {
 .top-nav-meta {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
+  flex-shrink: 0;
 }
 
 .developer-api-badge {
@@ -124,16 +131,18 @@ body {
   background: var(--green-bg);
   border: 1px solid var(--green-border);
   color: var(--green-text);
-  padding: 8px 16px;
+  padding: 7px 14px;
   border-radius: 30px;
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 
 .pulsing-green-dot {
   width: 9px;
   height: 9px;
+  flex-shrink: 0;
   border-radius: 50%;
   background: var(--green-main);
   box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
@@ -147,12 +156,13 @@ body {
 }
 
 .clock-timestamp {
-  font-size: 0.86rem;
+  font-size: 0.84rem;
   color: var(--text-muted);
   font-weight: 600;
   border-left: 1px solid var(--border-light);
-  padding-left: 16px;
+  padding-left: 14px;
   font-family: var(--font-mono);
+  white-space: nowrap;
 }
 
 /* Tab Bar Navigation (Always Visible in Sticky Header) */
@@ -164,22 +174,29 @@ body {
   max-width: 1720px;
   margin: 0 auto;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.sub-nav-tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .nav-tab-button {
   background: transparent;
   border: none;
-  padding: 14px 22px;
-  font-size: 0.95rem;
+  padding: 13px 20px;
+  font-size: 0.94rem;
   font-weight: 600;
   color: var(--text-muted);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 9px;
+  gap: 8px;
   border-bottom: 3px solid transparent;
   transition: all 0.15s ease;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .nav-tab-button:hover {
@@ -204,7 +221,7 @@ body {
 }
 
 /* ==========================================================================
-   Prominent Route Selection Bar
+   Prominent Route Selection Bar (With Collapsible/Expandable Mobile Support)
    ========================================================================== */
 .route-control-card {
   background: #FFFFFF;
@@ -232,7 +249,20 @@ body {
   color: var(--text-dark);
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
+}
+
+.route-control-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.mobile-expand-toggle,
+.btn-action-outline.mobile-expand-toggle {
+  display: none;
 }
 
 .route-chips-grid {
@@ -257,6 +287,8 @@ body {
   gap: 8px;
   transition: all 0.15s ease;
   user-select: none;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .route-chip:hover {
@@ -284,6 +316,7 @@ body {
   font-weight: 800;
   background: #F1F5F9;
   color: var(--text-dark);
+  flex-shrink: 0;
 }
 
 .route-chip.active .route-chip-num {
@@ -306,9 +339,11 @@ body {
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   box-shadow: 0 2px 6px rgba(0, 114, 206, 0.25);
   transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
 .btn-action-primary:hover {
@@ -329,8 +364,10 @@ body {
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
 .btn-action-outline:hover {
@@ -351,9 +388,11 @@ body {
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);
   transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
 .btn-action-emerald:hover {
@@ -382,6 +421,7 @@ body {
   flex-direction: column;
   justify-content: space-between;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
+  min-width: 0;
 }
 
 .kpi-stat-card:hover {
@@ -393,6 +433,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 8px;
   margin-bottom: 12px;
 }
 
@@ -407,6 +448,7 @@ body {
 .kpi-icon-pill {
   width: 38px;
   height: 38px;
+  flex-shrink: 0;
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -415,7 +457,7 @@ body {
 }
 
 .kpi-big-number {
-  font-size: 2.3rem;
+  font-size: clamp(1.75rem, 2.5vw, 2.3rem);
   font-weight: 800;
   color: var(--text-dark);
   letter-spacing: -0.02em;
@@ -446,7 +488,7 @@ body {
 }
 
 .card-title-lg {
-  font-size: 1.25rem;
+  font-size: clamp(1.08rem, 1.5vw, 1.25rem);
   font-weight: 800;
   color: var(--text-dark);
   margin: 0 0 6px 0;
@@ -458,6 +500,37 @@ body {
   color: var(--text-muted);
   margin: 0;
   line-height: 1.5;
+}
+
+/* ==========================================================================
+   Shared Responsive Two-Column Split Grids & Charts
+   ========================================================================== */
+.two-col-split-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.chart-panel-card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--border-light);
+  border-radius: 12px;
+  padding: 24px;
+  min-width: 0;
+}
+
+.chart-panel-subtle {
+  background: #F8FAFC;
+  border: 1.5px solid var(--border-light);
+  border-radius: 12px;
+  padding: 24px;
+  min-width: 0;
+}
+
+.chart-scroll-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* ==========================================================================
@@ -483,7 +556,6 @@ body {
 .leaflet-map-container {
   height: 100% !important;
   width: 100% !important;
-  min-height: 640px !important;
   background: #E2E8F0;
 }
 
@@ -507,6 +579,26 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 8px;
+}
+
+.section-collapse-btn {
+  border: 1px solid var(--border-light);
+  background: #FFFFFF;
+  border-radius: 7px;
+  padding: 5px 10px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text-body);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.section-collapse-btn:hover {
+  border-color: var(--cta-blue);
+  color: var(--cta-blue);
 }
 
 .telemetry-items-scroll {
@@ -542,6 +634,8 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
   margin-bottom: 6px;
 }
 
@@ -556,12 +650,15 @@ body {
 .route-color-indicator {
   width: 12px;
   height: 12px;
+  flex-shrink: 0;
   border-radius: 50%;
 }
 
 .telemetry-stats-row {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
   font-size: 0.82rem;
   color: var(--text-muted);
 }
@@ -578,6 +675,7 @@ body {
   font-weight: 750;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  white-space: nowrap;
 }
 
 .pill-badge-green { background: var(--green-bg); color: var(--green-text); border: 1px solid var(--green-border); }
@@ -589,6 +687,7 @@ body {
    ========================================================================== */
 .table-responsive-container {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border-radius: 10px;
   border: 1px solid var(--border-light);
 }
@@ -609,6 +708,7 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   border-bottom: 1px solid var(--border-light);
+  white-space: nowrap;
 }
 
 .enterprise-data-table td {
@@ -626,8 +726,29 @@ body {
 }
 
 /* ==========================================================================
-   Dispatch Playbook Cards
+   Dispatch Playbook Cards & Comparison Bars
    ========================================================================== */
+.compare-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.compare-bar-label {
+  width: 115px;
+  flex-shrink: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.compare-bar-val {
+  width: 50px;
+  flex-shrink: 0;
+  font-size: 0.84rem;
+  text-align: right;
+  font-weight: 700;
+}
+
 .dispatch-directive-card {
   border-radius: 12px;
   padding: 18px 24px;
@@ -659,6 +780,8 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .dispatch-card-text {
@@ -669,7 +792,7 @@ body {
 }
 
 /* ==========================================================================
-   Responsive Breakpoints
+   Responsive Breakpoints: Tablet & Small Laptop (<= 1280px & <= 1024px)
    ========================================================================== */
 @media (max-width: 1280px) {
   .kpi-container-grid {
@@ -678,25 +801,176 @@ body {
   .map-view-split {
     grid-template-columns: 1fr;
   }
+  .leaflet-frame-box {
+    height: 520px;
+  }
   .telemetry-sidebar-card {
-    height: 420px;
+    height: auto;
+    max-height: 400px;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .top-nav-bar {
-    padding: 12px 16px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    padding: 12px 20px;
   }
   .sub-nav-tabs {
-    padding: 0 16px;
+    padding: 0 20px;
   }
   .app-container {
-    padding: 16px 16px 48px;
+    padding: 20px 20px 56px;
+  }
+  .two-col-split-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   Responsive Breakpoints: Mobile Devices (<= 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .top-nav-bar {
+    padding: 10px 16px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .brand-badge-icon {
+    width: 38px;
+    height: 38px;
+    font-size: 19px;
+    border-radius: 10px;
+  }
+  .brand-tagline {
+    display: none;
+  }
+  .top-nav-meta {
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .developer-api-badge {
+    padding: 5px 10px;
+    font-size: 0.72rem;
+  }
+  .clock-timestamp {
+    border-left: none;
+    padding-left: 0;
+    font-size: 0.76rem;
+  }
+  .sub-nav-tabs {
+    padding: 0 12px;
+    gap: 2px;
+  }
+  .nav-tab-button {
+    padding: 11px 14px;
+    font-size: 0.86rem;
+  }
+  .app-container {
+    padding: 14px 14px 44px;
+  }
+
+  /* Route Filter Bar: Horizontal swipe on mobile unless expanded */
+  .route-control-card {
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    gap: 12px;
+  }
+  .route-control-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .mobile-expand-toggle,
+  .btn-action-outline.mobile-expand-toggle {
+    display: inline-flex;
+  }
+  .route-chips-grid.mobile-collapsed {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+  .route-chips-grid.mobile-collapsed::-webkit-scrollbar {
+    display: none;
+  }
+  .route-chip {
+    height: 38px;
+    padding: 0 13px;
+    font-size: 0.84rem;
+  }
+
+  /* Cards & Map Scaling */
+  .card-enterprise {
+    padding: 18px 16px;
+    margin-bottom: 16px;
+    border-radius: 12px;
+  }
+  .chart-panel-card,
+  .chart-panel-subtle {
+    padding: 16px;
   }
   .kpi-container-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .kpi-stat-card {
+    padding: 16px;
+  }
+  .leaflet-frame-box {
+    height: 400px;
+  }
+  .telemetry-sidebar-card {
+    max-height: 360px;
+  }
+  .telemetry-sidebar-card.collapsed {
+    max-height: none;
+    height: auto;
+  }
+  .enterprise-data-table th,
+  .enterprise-data-table td {
+    padding: 10px 12px;
+    font-size: 0.84rem;
+  }
+  .dispatch-directive-card {
+    padding: 14px 16px;
+  }
+  .horizon-slider-desc {
+    display: none;
+  }
+  .forecast-clock-card {
+    width: 100%;
+    padding: 14px 18px !important;
+  }
+}
+
+/* ==========================================================================
+   Responsive Breakpoints: Small Phones (<= 480px)
+   ========================================================================== */
+@media (max-width: 480px) {
+  .kpi-container-grid {
     grid-template-columns: 1fr;
+  }
+  .leaflet-frame-box {
+    height: 340px;
+  }
+  .compare-bar-label {
+    width: 90px;
+    font-size: 0.78rem;
+  }
+  .compare-bar-val {
+    width: 42px;
+    font-size: 0.78rem;
+  }
+  .btn-action-emerald,
+  .btn-action-primary {
+    width: 100%;
+    font-size: 0.86rem;
+    height: 40px;
+  }
+  .route-control-actions .mobile-expand-toggle,
+  .route-control-actions .btn-action-outline {
+    flex: 1;
+    height: 40px;
   }
 }

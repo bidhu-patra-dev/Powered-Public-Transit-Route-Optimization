@@ -2,6 +2,8 @@ import React, { useState } from "react";
 
 export default function HourlyBottlenecksTab({ hourlyData }) {
   const [activeWindow, setActiveWindow] = useState("all");
+  const [leaderboardOpen, setLeaderboardOpen] = useState(true);
+  const [clusteringOpen, setClusteringOpen] = useState(true);
 
   const diurnal = hourlyData?.diurnal_series || [];
   const leaderboard = hourlyData?.leaderboard || [];
@@ -52,19 +54,19 @@ export default function HourlyBottlenecksTab({ hourlyData }) {
         </div>
 
         {/* Diurnal Speed vs. Delay SVG Chart */}
-        <div style={{ background: "#F8FAFC", border: "1.5px solid var(--border-light)", borderRadius: "12px", padding: "24px" }}>
+        <div className="chart-panel-subtle">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
             <span style={{ fontWeight: 800, fontSize: "1rem", color: "var(--text-dark)" }}>
               Arterial Speed (mph) vs. Transit Delay (min) by Hour
             </span>
-            <div style={{ display: "flex", gap: "20px", fontSize: "0.85rem" }}>
+            <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", fontSize: "0.85rem" }}>
               <span style={{ color: "var(--cta-blue)", fontWeight: 700 }}>● Arterial Street Speed (mph)</span>
               <span style={{ color: "var(--red-main)", fontWeight: 700 }}>■ Average Transit Delay (min)</span>
             </div>
           </div>
 
-          <div style={{ overflowX: "auto" }}>
-            <svg viewBox="0 0 920 240" style={{ width: "100%", height: "240px", overflow: "visible" }}>
+          <div className="chart-scroll-wrap">
+            <svg viewBox="0 0 920 240" style={{ width: "100%", minWidth: "620px", height: "auto", overflow: "visible", display: "block" }}>
               {/* Grid Lines */}
               <line x1="55" y1="20" x2="900" y2="20" stroke="#E2E8F0" strokeDasharray="3,3" />
               <line x1="55" y1="75" x2="900" y2="75" stroke="#E2E8F0" strokeDasharray="3,3" />
@@ -159,13 +161,19 @@ export default function HourlyBottlenecksTab({ hourlyData }) {
 
       {/* Section 3: Ranked Route Bottleneck Leaderboard */}
       <div className="card-enterprise">
-        <div className="card-enterprise-header">
-          <h2 className="card-title-lg">🚦 Chicago Bus Route Congestion Leaderboard</h2>
-          <p className="card-subtitle-text">
-            Ranked by mean schedule delay, peak congestion, scheduled headway regularity, and demand score.
-          </p>
+        <div className="card-enterprise-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px", flexWrap: "wrap", marginBottom: leaderboardOpen ? "20px" : 0 }}>
+          <div>
+            <h2 className="card-title-lg">🚦 Chicago Bus Route Congestion Leaderboard</h2>
+            <p className="card-subtitle-text">
+              Ranked by mean schedule delay, peak congestion, scheduled headway regularity, and demand score.
+            </p>
+          </div>
+          <button type="button" className="section-collapse-btn" onClick={() => setLeaderboardOpen((v) => !v)}>
+            {leaderboardOpen ? "Collapse ▲" : "Expand ▼"}
+          </button>
         </div>
 
+        {leaderboardOpen && (
         <div className="table-responsive-container">
           <table className="enterprise-data-table">
             <thead>
@@ -215,26 +223,33 @@ export default function HourlyBottlenecksTab({ hourlyData }) {
             </tbody>
           </table>
         </div>
+        )}
       </div>
 
       {/* Section 4: Unsupervised Machine Learning: K-Means Route Clustering Studio */}
       <div className="card-enterprise">
-        <div className="card-enterprise-header">
-          <h2 className="card-title-lg">🤖 Unsupervised Machine Learning: K-Means Route Clustering Studio</h2>
-          <p className="card-subtitle-text">
-            Segments Chicago routes into operational archetypes by clustering across 4 dimensions:{" "}
-            <code>[Mean Delay, Peak Delay, Scheduled Headway, Demand Score]</code>.
-          </p>
+        <div className="card-enterprise-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px", flexWrap: "wrap", marginBottom: clusteringOpen ? "20px" : 0 }}>
+          <div>
+            <h2 className="card-title-lg">🤖 Unsupervised Machine Learning: K-Means Route Clustering Studio</h2>
+            <p className="card-subtitle-text">
+              Segments Chicago routes into operational archetypes by clustering across 4 dimensions:{" "}
+              <code>[Mean Delay, Peak Delay, Scheduled Headway, Demand Score]</code>.
+            </p>
+          </div>
+          <button type="button" className="section-collapse-btn" onClick={() => setClusteringOpen((v) => !v)}>
+            {clusteringOpen ? "Collapse ▲" : "Expand ▼"}
+          </button>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "24px", alignItems: "start" }}>
+        {clusteringOpen && (
+        <div className="two-col-split-grid">
           {/* 2D SVG Scatter Plot in Feature Space */}
-          <div style={{ background: "#F8FAFC", border: "1.5px solid var(--border-light)", borderRadius: "12px", padding: "22px" }}>
+          <div className="chart-panel-subtle">
             <div style={{ fontWeight: 800, fontSize: "0.95rem", marginBottom: "14px", color: "var(--text-dark)" }}>
               K-Means Feature Space: Demand Score vs. Mean Delay
             </div>
 
-            <svg viewBox="0 0 460 310" style={{ width: "100%", height: "290px", overflow: "visible" }}>
+            <svg viewBox="0 0 460 310" style={{ width: "100%", height: "auto", maxHeight: "320px", overflow: "visible", display: "block" }}>
               {/* Axes */}
               <line x1="50" y1="250" x2="430" y2="250" stroke="#CBD5E1" strokeWidth="2" />
               <line x1="50" y1="30" x2="50" y2="250" stroke="#CBD5E1" strokeWidth="2" />
@@ -316,6 +331,7 @@ export default function HourlyBottlenecksTab({ hourlyData }) {
             ))}
           </div>
         </div>
+        )}
       </div>
     </div>
   );

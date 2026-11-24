@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import RouteMap from "./RouteMap";
 
 export default function LiveOperationsTab({
@@ -9,6 +9,7 @@ export default function LiveOperationsTab({
   onRefresh,
   loading,
 }) {
+  const [streamExpanded, setStreamExpanded] = useState(true);
   const summary = liveData?.summary || {
     active_buses: 50,
     avg_speed_mph: 16.6,
@@ -102,7 +103,7 @@ export default function LiveOperationsTab({
 
       {/* Map & Telemetry Split Layout */}
       <div className="card-enterprise">
-        <div className="card-enterprise-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div className="card-enterprise-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
           <div>
             <h2 className="card-title-lg">🗺️ Live Chicago Transit Map (Route Polylines & Fleet GPS)</h2>
             <p className="card-subtitle-text">
@@ -131,24 +132,34 @@ export default function LiveOperationsTab({
                 onSelectRoute={onSelectRoute}
               />
             </div>
-            <div style={{ marginTop: "12px", fontSize: "0.85rem", color: "var(--text-muted)", display: "flex", gap: "20px", flexWrap: "wrap", alignItems: "center" }}>
+            <div style={{ marginTop: "12px", fontSize: "0.84rem", color: "var(--text-muted)", display: "flex", gap: "10px 18px", flexWrap: "wrap", alignItems: "center" }}>
               <span>🟢 <strong style={{ color: "var(--text-dark)" }}>On-Time:</strong> ≤ 2 min</span>
               <span>🟡 <strong style={{ color: "var(--text-dark)" }}>Minor Delay:</strong> 2–6 min</span>
               <span>🔴 <strong style={{ color: "var(--text-dark)" }}>Severe Bottleneck:</strong> &gt; 6 min</span>
-              <span style={{ marginLeft: "auto", fontStyle: "italic", color: "var(--text-subtle)" }}>
-                💡 Click any route line or bus marker to inspect details.
+              <span style={{ fontStyle: "italic", color: "var(--text-subtle)" }}>
+                💡 Tap any route line or bus marker to inspect.
               </span>
             </div>
           </div>
 
-          {/* Right: Live Route Telemetry Stream */}
-          <div className="telemetry-sidebar-card">
+          {/* Right: Live Route Telemetry Stream (Expandable/Collapsible) */}
+          <div className={`telemetry-sidebar-card ${streamExpanded ? "" : "collapsed"}`}>
             <div className="telemetry-sidebar-header">
               <span>📊 Live Route Stream</span>
-              <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontWeight: 600 }}>
-                {routeTelemetry.length} Routes Monitored
-              </span>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontWeight: 600 }}>
+                  {routeTelemetry.length} Routes
+                </span>
+                <button
+                  type="button"
+                  className="section-collapse-btn"
+                  onClick={() => setStreamExpanded((prev) => !prev)}
+                >
+                  {streamExpanded ? "Collapse ▲" : "Expand ▼"}
+                </button>
+              </div>
             </div>
+            {streamExpanded && (
             <div className="telemetry-items-scroll">
               {routeTelemetry.map((rt) => {
                 const isSelected = selectedRoute === rt.route;
@@ -185,6 +196,7 @@ export default function LiveOperationsTab({
                 );
               })}
             </div>
+            )}
           </div>
         </div>
       </div>

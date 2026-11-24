@@ -25,21 +25,19 @@ export default function ForecasterTab({
 
         {/* Horizon Slider & Digital Clock Window Badge */}
         <div
+          className="chart-panel-subtle"
           style={{
-            background: "#F8FAFC",
-            border: "1.5px solid var(--border-light)",
             borderRadius: "14px",
-            padding: "24px 28px",
             marginBottom: "24px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
             flexWrap: "wrap",
-            gap: "24px",
+            gap: "20px",
           }}
         >
-          <div style={{ flex: "1 1 360px" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px", alignItems: "center" }}>
+          <div style={{ flex: "1 1 260px", minWidth: 0 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px", alignItems: "center", flexWrap: "wrap", gap: "6px" }}>
               <span style={{ fontWeight: 800, fontSize: "1rem", color: "var(--text-dark)" }}>
                 Forecast Horizon: <span style={{ color: "var(--cta-blue)" }}>+{horizon} Hour(s) Ahead</span>
               </span>
@@ -54,17 +52,18 @@ export default function ForecasterTab({
               onChange={(e) => onHorizonChange(parseInt(e.target.value, 10))}
               style={{ width: "100%", height: "8px", accentColor: "#0072CE", cursor: "pointer" }}
             />
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8rem", color: "var(--text-subtle)", marginTop: "8px", fontWeight: 600 }}>
-              <span>t+1 (Immediate)</span>
-              <span>t+3 (Rush Peak)</span>
-              <span>t+6 (Shift Change)</span>
-              <span>t+12 (Half Day)</span>
-              <span>t+24 (Full Cycle)</span>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8rem", color: "var(--text-subtle)", marginTop: "8px", fontWeight: 600, gap: "4px" }}>
+              <span>t+1<span className="horizon-slider-desc"> (Immediate)</span></span>
+              <span>t+3<span className="horizon-slider-desc"> (Rush Peak)</span></span>
+              <span>t+6<span className="horizon-slider-desc"> (Shift Change)</span></span>
+              <span>t+12<span className="horizon-slider-desc"> (Half Day)</span></span>
+              <span>t+24<span className="horizon-slider-desc"> (Full Cycle)</span></span>
             </div>
           </div>
 
           {/* Digital Clock Window Badge */}
           <div
+            className="forecast-clock-card"
             style={{
               background: "#0F172A",
               color: "#FFFFFF",
@@ -90,9 +89,9 @@ export default function ForecasterTab({
         </div>
 
         {/* Forecasted Route Delays Chart & Cards */}
-        <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "24px", alignItems: "start" }}>
+        <div className="two-col-split-grid">
           {/* Bar Chart of Predicted Delays */}
-          <div style={{ background: "#FFFFFF", border: "1.5px solid var(--border-light)", borderRadius: "12px", padding: "24px" }}>
+          <div className="chart-panel-card">
             <h3 style={{ fontSize: "1.05rem", fontWeight: 800, margin: "0 0 16px 0", color: "var(--text-dark)" }}>
               Predicted Route Delay for +{horizon} Hour(s) Ahead (mins)
             </h3>
@@ -104,7 +103,7 @@ export default function ForecasterTab({
 
                 return (
                   <div key={fc.route}>
-                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.9rem", marginBottom: "6px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "4px", fontSize: "0.9rem", marginBottom: "6px" }}>
                       <span style={{ fontWeight: 700, color: "var(--text-dark)" }}>{fc.display_name}</span>
                       <span>
                         <strong style={{ color: fc.predicted_delay >= 5 ? "var(--red-main)" : "var(--text-dark)", fontSize: "0.95rem" }}>
@@ -133,7 +132,7 @@ export default function ForecasterTab({
           </div>
 
           {/* Model Degradation Accuracy Table */}
-          <div style={{ background: "#FFFFFF", border: "1.5px solid var(--border-light)", borderRadius: "12px", padding: "24px" }}>
+          <div className="chart-panel-card">
             <h3 style={{ fontSize: "1.05rem", fontWeight: 800, margin: "0 0 10px 0", color: "var(--text-dark)" }}>
               📉 Out-of-Time Model Accuracy Across Horizons
             </h3>
@@ -141,28 +140,30 @@ export default function ForecasterTab({
               Evaluated on chronological test partition. Notice variance explained (<em>R</em>²) holds steady at ~0.90 across all direct horizons.
             </p>
 
-            <table className="enterprise-data-table">
-              <thead>
-                <tr>
-                  <th>Horizon</th>
-                  <th>MAE (mins)</th>
-                  <th>RMSE (mins)</th>
-                  <th>R² Score</th>
-                </tr>
-              </thead>
-              <tbody>
-                {degradation.map((row, idx) => (
-                  <tr key={idx}>
-                    <td><strong style={{ fontSize: "0.92rem" }}>{row.horizon}</strong></td>
-                    <td>{row.mae} min</td>
-                    <td>{row.rmse} min</td>
-                    <td>
-                      <span style={{ fontWeight: 800, color: "var(--green-main)", fontSize: "0.95rem" }}>{row.r2}</span>
-                    </td>
+            <div className="table-responsive-container">
+              <table className="enterprise-data-table">
+                <thead>
+                  <tr>
+                    <th>Horizon</th>
+                    <th>MAE (mins)</th>
+                    <th>RMSE (mins)</th>
+                    <th>R² Score</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {degradation.map((row, idx) => (
+                    <tr key={idx}>
+                      <td><strong style={{ fontSize: "0.92rem" }}>{row.horizon}</strong></td>
+                      <td>{row.mae} min</td>
+                      <td>{row.rmse} min</td>
+                      <td>
+                        <span style={{ fontWeight: 800, color: "var(--green-main)", fontSize: "0.95rem" }}>{row.r2}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
             <div style={{ marginTop: "18px", padding: "14px 16px", background: "var(--green-bg)", border: "1.5px solid var(--green-border)", borderRadius: "10px", fontSize: "0.84rem", color: "var(--green-text)", lineHeight: "1.5" }}>
               ✅ <strong>Strict Chronological Validation:</strong> Training timestamps strictly precede test periods, with lag vectors computed via backward shifts (<code>.shift(1)</code>) guaranteeing zero data leakage.

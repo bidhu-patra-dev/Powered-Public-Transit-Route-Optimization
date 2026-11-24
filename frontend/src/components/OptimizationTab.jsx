@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 export default function OptimizationTab({
   optimizationData,
@@ -6,6 +6,8 @@ export default function OptimizationTab({
   onHorizonChange,
   loading,
 }) {
+  const [comparisonOpen, setComparisonOpen] = useState(true);
+  const [directivesOpen, setDirectivesOpen] = useState(true);
   const kpis = optimizationData?.kpis || {
     mean_wait_reduction_pct: 31.4,
     baseline_avg_wait: 10.8,
@@ -93,13 +95,19 @@ export default function OptimizationTab({
 
       {/* Side-by-Side Wait Time Comparison Visual */}
       <div className="card-enterprise">
-        <div className="card-enterprise-header">
-          <h2 className="card-title-lg">📊 Passenger Wait Time Comparison (Static Timetable vs. Dynamic Optimization)</h2>
-          <p className="card-subtitle-text">
-            Red bars represent unmanaged passenger wait time under static timetables. Green bars show wait times after dynamic headway rebalancing.
-          </p>
+        <div className="card-enterprise-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px", flexWrap: "wrap", marginBottom: comparisonOpen ? "20px" : 0 }}>
+          <div>
+            <h2 className="card-title-lg">📊 Passenger Wait Time Comparison (Static Timetable vs. Dynamic Optimization)</h2>
+            <p className="card-subtitle-text">
+              Red bars represent unmanaged passenger wait time under static timetables. Green bars show wait times after dynamic headway rebalancing.
+            </p>
+          </div>
+          <button type="button" className="section-collapse-btn" onClick={() => setComparisonOpen((v) => !v)}>
+            {comparisonOpen ? "Collapse ▲" : "Expand ▼"}
+          </button>
         </div>
 
+        {comparisonOpen && (
         <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
           {routeActions.map((ra) => {
             const maxW = 16.0;
@@ -132,26 +140,26 @@ export default function OptimizationTab({
                 </div>
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-                    <span style={{ width: "115px", fontSize: "0.82rem", color: "var(--red-main)", fontWeight: 700 }}>
+                  <div className="compare-bar-row">
+                    <span className="compare-bar-label" style={{ color: "var(--red-main)" }}>
                       Static Schedule:
                     </span>
-                    <div style={{ flex: 1, background: "#E2E8F0", borderRadius: "6px", height: "10px", overflow: "hidden" }}>
+                    <div style={{ flex: 1, minWidth: 0, background: "#E2E8F0", borderRadius: "6px", height: "10px", overflow: "hidden" }}>
                       <div style={{ width: `${basePct}%`, height: "100%", background: "var(--red-main)", borderRadius: "6px" }} />
                     </div>
-                    <span style={{ width: "50px", fontSize: "0.84rem", textAlign: "right", color: "var(--text-muted)", fontWeight: 600 }}>
+                    <span className="compare-bar-val" style={{ color: "var(--text-muted)" }}>
                       {ra.baseline_wait}m
                     </span>
                   </div>
 
-                  <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-                    <span style={{ width: "115px", fontSize: "0.82rem", color: "var(--green-main)", fontWeight: 700 }}>
+                  <div className="compare-bar-row">
+                    <span className="compare-bar-label" style={{ color: "var(--green-main)" }}>
                       Optimized:
                     </span>
-                    <div style={{ flex: 1, background: "#E2E8F0", borderRadius: "6px", height: "10px", overflow: "hidden" }}>
+                    <div style={{ flex: 1, minWidth: 0, background: "#E2E8F0", borderRadius: "6px", height: "10px", overflow: "hidden" }}>
                       <div style={{ width: `${optPct}%`, height: "100%", background: "var(--green-main)", borderRadius: "6px" }} />
                     </div>
-                    <span style={{ width: "50px", fontSize: "0.84rem", textAlign: "right", color: "var(--green-main)", fontWeight: 800 }}>
+                    <span className="compare-bar-val" style={{ color: "var(--green-main)" }}>
                       {ra.optimized_wait}m
                     </span>
                   </div>
@@ -160,17 +168,24 @@ export default function OptimizationTab({
             );
           })}
         </div>
+        )}
       </div>
 
       {/* Actionable Dispatch Playbook */}
       <div className="card-enterprise">
-        <div className="card-enterprise-header">
-          <h2 className="card-title-lg">🚨 Actionable Dispatch Directives</h2>
-          <p className="card-subtitle-text">
-            Autonomous operational playbook for CTA dispatchers and route supervisors.
-          </p>
+        <div className="card-enterprise-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px", flexWrap: "wrap", marginBottom: directivesOpen ? "20px" : 0 }}>
+          <div>
+            <h2 className="card-title-lg">🚨 Actionable Dispatch Directives</h2>
+            <p className="card-subtitle-text">
+              Autonomous operational playbook for CTA dispatchers and route supervisors.
+            </p>
+          </div>
+          <button type="button" className="section-collapse-btn" onClick={() => setDirectivesOpen((v) => !v)}>
+            {directivesOpen ? "Collapse ▲" : "Expand ▼"}
+          </button>
         </div>
 
+        {directivesOpen && (
         <div>
           {routeActions.map((ra) => (
             <div
@@ -204,6 +219,7 @@ export default function OptimizationTab({
             </div>
           ))}
         </div>
+        )}
       </div>
     </div>
   );

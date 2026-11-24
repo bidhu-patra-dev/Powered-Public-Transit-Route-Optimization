@@ -20,6 +20,7 @@ export default function App() {
   const [horizon, setHorizon] = useState(3);
   const [loading, setLoading] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(new Date().toLocaleTimeString());
+  const [routesExpanded, setRoutesExpanded] = useState(false);
 
   // 1. Fetch available routes and base GeoJSON
   useEffect(() => {
@@ -167,16 +168,24 @@ export default function App() {
               )}
             </div>
 
-            <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+            <div className="route-control-actions">
               {selectedRoute && (
                 <button
                   className="btn-action-outline"
                   style={{ height: "38px", fontSize: "0.84rem", padding: "0 14px" }}
                   onClick={() => setSelectedRoute(null)}
                 >
-                  ✕ Show All Routes
+                  ✕ Show All
                 </button>
               )}
+              <button
+                type="button"
+                className="btn-action-outline mobile-expand-toggle"
+                style={{ height: "38px", fontSize: "0.82rem", padding: "0 12px" }}
+                onClick={() => setRoutesExpanded((prev) => !prev)}
+              >
+                {routesExpanded ? "▲ Squash Routes" : `▼ All ${routesList.length || 10} Routes`}
+              </button>
               <button
                 className="btn-action-primary"
                 style={{ height: "38px", fontSize: "0.84rem", padding: "0 16px" }}
@@ -188,7 +197,7 @@ export default function App() {
             </div>
           </div>
 
-          <div className="route-chips-grid">
+          <div className={`route-chips-grid ${routesExpanded ? "" : "mobile-collapsed"}`}>
             <button
               className={`route-chip ${selectedRoute === null ? "active" : ""}`}
               onClick={() => setSelectedRoute(null)}

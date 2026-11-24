@@ -38,12 +38,22 @@ export default function RouteMap({ geojsonData, vehicles = [], selectedRoute, on
     vehiclesLayerRef.current = L.layerGroup().addTo(map);
     mapInstanceRef.current = map;
 
-    // Force map size invalidation so it renders fully inside React dynamic layout
-    setTimeout(() => {
+    // Force map size invalidation on mount and container resize (mobile orientation / tablet breakpoint)
+    const timer = setTimeout(() => {
       map.invalidateSize();
     }, 150);
 
+    let resizeObserver = null;
+    if (typeof ResizeObserver !== "undefined" && mapContainerRef.current) {
+      resizeObserver = new ResizeObserver(() => {
+        map.invalidateSize();
+      });
+      resizeObserver.observe(mapContainerRef.current);
+    }
+
     return () => {
+      clearTimeout(timer);
+      if (resizeObserver) resizeObserver.disconnect();
       map.remove();
       mapInstanceRef.current = null;
     };
@@ -188,7 +198,7 @@ export default function RouteMap({ geojsonData, vehicles = [], selectedRoute, on
     <div
       ref={mapContainerRef}
       className="leaflet-map-container"
-      style={{ height: "640px", width: "100%", minHeight: "640px" }}
+      style={{ height: "100%", width: "100%" }}
     />
   );
 }
