@@ -27,11 +27,11 @@ export default function RouteMap({ geojsonData, vehicles = [], selectedRoute, on
       preferCanvas: true,
     });
 
-    // Clean light carto positron tile layer
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+    // Standard OpenStreetMap tiles (100% free, zero API key required, crisp street grid)
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
       attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
 
     geojsonLayerRef.current = L.layerGroup().addTo(map);
@@ -104,6 +104,16 @@ export default function RouteMap({ geojsonData, vehicles = [], selectedRoute, on
     });
 
     layer.addLayer(geoLayer);
+
+    // Auto-fit map bounds to encompass all route lines cleanly
+    try {
+      const bounds = geoLayer.getBounds();
+      if (bounds && bounds.isValid()) {
+        map.fitBounds(bounds, { padding: [30, 30] });
+      }
+    } catch (e) {
+      // ignore
+    }
   }, [geojsonData, selectedRoute, onSelectRoute]);
 
   // Update live vehicle markers along the route lines
