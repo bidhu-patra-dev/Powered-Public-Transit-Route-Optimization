@@ -43,14 +43,6 @@ export default function LiveOperationsTab({
           <strong style={{ fontSize: "1rem" }}>🟢 Live Ground-Truth Transit Telemetry:</strong>{" "}
           Powered directly by the author's registered <strong>CTA Bus Tracker Developer API Key</strong> & GTFS-Realtime streams. Broadcasting instantaneous GPS coordinates, speeds, and schedule adherence along official CTA line geometry.
         </div>
-        <button
-          className="btn-action-primary"
-          onClick={onRefresh}
-          disabled={loading}
-          style={{ height: "40px", fontSize: "0.86rem", whiteSpace: "nowrap" }}
-        >
-          {loading ? "Syncing..." : "🔄 Refresh Feed"}
-        </button>
       </div>
 
       {/* Large Executive KPI Scorecard */}

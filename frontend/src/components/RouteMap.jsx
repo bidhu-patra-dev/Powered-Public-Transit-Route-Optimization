@@ -28,7 +28,7 @@ export default function RouteMap({ geojsonData, vehicles = [], selectedRoute, on
     });
 
     // Standard OpenStreetMap tiles (100% free, zero API key required, crisp street grid)
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -37,6 +37,11 @@ export default function RouteMap({ geojsonData, vehicles = [], selectedRoute, on
     geojsonLayerRef.current = L.layerGroup().addTo(map);
     vehiclesLayerRef.current = L.layerGroup().addTo(map);
     mapInstanceRef.current = map;
+
+    // Force map size invalidation so it renders fully inside React dynamic layout
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 150);
 
     return () => {
       map.remove();
@@ -179,5 +184,11 @@ export default function RouteMap({ geojsonData, vehicles = [], selectedRoute, on
     });
   }, [vehicles]);
 
-  return <div ref={mapContainerRef} className="leaflet-map-container" />;
+  return (
+    <div
+      ref={mapContainerRef}
+      className="leaflet-map-container"
+      style={{ height: "640px", width: "100%", minHeight: "640px" }}
+    />
+  );
 }
