@@ -18,6 +18,37 @@ Engineered with a responsive **React 18 + Vite** single-page application (SPA) a
 
 ---
 
+## 📸 Live Platform Screenshots
+
+All views below are captured directly from the live production deployment at **[cta-route-optimizer-ai.up.railway.app](https://cta-route-optimizer-ai.up.railway.app)**:
+
+### 1. Live Network Operations & Executive Fleet KPIs
+> Streaming 237 real-time CTA buses along Chicago street polylines with OpenStreetMap tiles and live telemetry KPIs.
+
+![Live Network Operations & KPIs](docs/screenshots/01-live-network-kpis-map.jpg)
+
+### 2. Interactive GeoJSON Route Polylines & Telemetry Stream
+> Exact street geometry polylines with hover/tap inspection (`Route 60 - Blue Island`) and a collapsible live route stream.
+
+![Interactive Route Polylines & Tooltip](docs/screenshots/02-live-route-polylines-tooltip.jpg)
+
+### 3. Hourly Bottlenecks & Arterial Speed Curves
+> Evening rush (4–7 PM) speed degradation vs. transit delay spikes synthesized from CTA GTFS schedules and Chicago Traffic Tracker data.
+
+![Hourly Bottlenecks & Speed Sensor Analysis](docs/screenshots/03-hourly-bottlenecks-chart.png)
+
+### 4. 24-Hour Multi-Horizon Predictive Delay Forecaster
+> Direct LightGBM delay predictions (`+13h` ahead, target `02:57 AM CST`) alongside strict chronological validation metrics ($R^2 \approx 0.90$).
+
+![24-Hour Multi-Horizon Predictive Forecaster](docs/screenshots/04-24h-predictive-forecaster.jpg)
+
+### 5. Dynamic Dispatch & Headway Optimization Engine
+> Automated headway compression (`11.3m → 9.2m`, `-18%` wait reduction), cumulative wait savings, comparison bars, and 1-click CSV export.
+
+![Dynamic Dispatch & Headway Optimization](docs/screenshots/05-dynamic-dispatch-optimization.jpg)
+
+---
+
 ## 🏛️ System Architecture
 
 ```mermaid
@@ -239,6 +270,8 @@ The backend exposes health diagnostics and the V2 REST API under `/api/v2/`:
 │   ├── raw/                       # Source GTFS and traffic datasets
 │   └── reference/
 │       └── cta_bus_routes.geojson # 129 CTA Bus Route geometries (MultiLineString)
+├── docs/
+│   └── screenshots/               # Live Railway production UI screenshots for README
 ├── frontend/
 │   ├── dist/                      # Pre-compiled production React SPA (ready to serve)
 │   ├── src/
