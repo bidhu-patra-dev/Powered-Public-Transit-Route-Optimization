@@ -11,7 +11,6 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 COPY src/ ./src/
 COPY data/reference/cta_bus_routes.geojson ./data/reference/cta_bus_routes.geojson
-COPY outputs/reports/ ./outputs/reports/
 COPY --from=web-build /app/frontend/dist/ ./frontend/dist/
 ENV PYTHONUNBUFFERED=1
 EXPOSE 8000
